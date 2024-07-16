@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zaldhahe <zaldhahe@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/07 21:04:16 by zaldhahe          #+#    #+#             */
-/*   Updated: 2024/07/07 21:45:32 by zaldhahe         ###   ########.fr       */
+/*   Updated: 2024/07/16 14:46:03 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,26 +17,58 @@
 	//time_to_sleep
 	//number_of_times_each_philosopher_must_eat
 
-void set_values(char *av[], t_data *data)
+int get_doublesize(char *av[])
 {
-	data->pnum = atoi(av[1]);
-	data->pdie = atoi(av[2]);
-	data->peat = atoi(av[3]);
-	data->psleep = atoi(av[4]);
-	if (av[5])
-		data->plimit = atoi(av[5]);
+	int size = 0;
+	int i;
+	int j;
+
+	j = 1;
+	while (av[j])
+	{
+		i = 0;
+		while(av[j][i])
+		{
+			size++;
+			i++;
+		}
+		j++;
+	}
+	return size;
+}
+
+char *joinstrings(char *av[])
+{
+	int i;
+	int j;
+	int k;
+	char *str;
+
+	str = malloc(sizeof(char *) + 1);
+	j = 1;
+	k = 0;
+	while(av[j])
+	{
+		i = 0;
+		while(av[j][i])
+		{
+			str[k] = av[j][i];
+			i++;
+			k++;
+		}
+		j++;
+	}
+	str[k] = '\0';
+	return (str);
 }
 
 int	main(int ac, char *av[])
 {
-	t_data data;
-	//parsing needed
-	data.avstr = join_strings(av);
-	data.count = count_word(data.avstr, ' ');
-	set_values(av, &data);
-	printf("%d %d %d %d ", data.pnum, data.pdie, data.peat, data.psleep);
-	if (ac == 6)
-		printf("%d", data.plimit);
-	printf("\n");
+	(void)ac;
+	//t_data data;
+
+	printf("%s\n", joinstrings(av));
+
+	// data.avstr = joinstrings(av);
 	return(0);
 }

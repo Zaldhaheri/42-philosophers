@@ -3,16 +3,16 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: zaldhahe <zaldhahe@student.42.fr>          +#+  +:+       +#+         #
+#    By: marvin <marvin@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/07/07 20:59:41 by zaldhahe          #+#    #+#              #
-#    Updated: 2024/07/07 21:46:45 by zaldhahe         ###   ########.fr        #
+#    Updated: 2024/07/16 14:36:50 by marvin           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = philo
 
-SRC = philo.c checker.c utils1.c\
+SRC = philo.c \
 
 OBJ = $(SRC:.c=.o)
 
