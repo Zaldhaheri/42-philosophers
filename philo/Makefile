@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: marvin <marvin@student.42.fr>              +#+  +:+       +#+         #
+#    By: zaldhahe <zaldhahe@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/07/07 20:59:41 by zaldhahe          #+#    #+#              #
-#    Updated: 2024/07/16 14:36:50 by marvin           ###   ########.fr        #
+#    Updated: 2024/07/16 16:03:18 by zaldhahe         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,9 +23,6 @@ CFLAGS = -Wall -Werror -Wextra
 COMPILE = $(CC) $(CFLAGS)
 
 all : $(NAME)
-
-$(NAME) : $(OBJ)
-	$(COMPILE) $(OBJ) -o $(NAME)
 
 $(NAME) : $(OBJ)
 	$(COMPILE) $(OBJ) -o $(NAME)
