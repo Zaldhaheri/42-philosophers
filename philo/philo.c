@@ -17,6 +17,13 @@
 	//time_to_sleep
 	//number_of_times_each_philosopher_must_eat
 
+//output:
+	//timestamp_in_ms X has taken a fork
+	//timestamp_in_ms X is eating
+	//timestamp_in_ms X is sleeping
+	//timestamp_in_ms X is thinking
+	//timestamp_in_ms X died
+
 void set_data(t_data *data)
 {
 	if (data->count == 5 || data->count == 4)
@@ -27,7 +34,6 @@ void set_data(t_data *data)
 		data->psleep = atoi(data->avsplit[3]);
 		if (data->count == 5)
 			data->plimit = atoi(data->avsplit[4]);
-		printf("ball\n");
 	}
 	else
 		freexit(data->avstr, data->avsplit, data);
@@ -42,7 +48,12 @@ int	main(int ac, char *av[])
 		exit(1);
 	data.avstr = join_strings(av);
 	data.avsplit = ft_split(data.avstr, ' ', &data);
-	printf("%s\n%d\n", data.avstr, data.count);
 	set_data(&data);
+	printf("pnum: %d\n", data.pnum);
+	printf("pdie: %d\n",data.pdie);
+	printf("peat: %d\n",data.peat);
+	printf("psleep: %d\n",data.psleep);
+	if (data.plimit)
+		printf("plimit: %d\n", data.plimit);
 	return (0);
 }

@@ -16,6 +16,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <limits.h>
+#include <pthread.h>
+
 
 typedef struct s_data
 {
@@ -31,6 +33,13 @@ typedef struct s_data
 	char *avstr;
 	char **avsplit;
 }	t_data;
+
+typedef struct s_philo
+{
+	pthread_t pid;
+	int lfork;
+	int rfork;
+}
 
 size_t	ft_strlen(const char *str);
 int	ft_atoi(const char *str, t_data *data);
