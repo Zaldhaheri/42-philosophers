@@ -48,7 +48,7 @@ typedef struct s_fork
 {
 	int forkid;
 	int lastused;
-}
+} t_fork;
 
 size_t	ft_strlen(const char *str);
 int	ft_atoi(const char *str, t_data *data);
@@ -56,6 +56,12 @@ char	*ft_strdup(const char *str);
 char	*ft_strjoin(char const *s1, char const *s2);
 char	*join_strings(char *av[]);
 char	**ft_split(char const *s, char c, t_data *data);
+t_philo	*ft_lstnew(int content);
+int	ft_lstsize(t_philo *lst);
+t_philo	*ft_lstlast(t_philo *lst);
+void	ft_lstadd_back(t_philo **lst, t_philo *new);
+void	ft_lstclear(t_philo **lst, void (*del)(void*));
+void	ft_lstdelone(t_philo *lst, void (*del)(void*));
 
 void	freeing(char *str, char **string, t_data *data);
 void	freexit(char *str, char **string, t_data *data);

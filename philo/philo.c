@@ -48,23 +48,39 @@ void set_data(t_data *data)
 		freexit(data->avstr, data->avsplit, data);
 }
 
-void make_list(t_philo *philo, t_data *data)
+t_philo *make_list(t_philo *philo, t_data *data)
 {
-	t_philo *curr;
-	t_philo *prev;
+	t_philo *node;
+	int i;
 
-	curr = philo;
-	
+	i = 0;
+	while (i < data->pnum)
+	{
+		node = ft_lstnew(i);
+		if (!node)
+		{
+			ft_lstclear(&philo, free);
+			//free stuff;
+			exit(1);
+		}
+		ft_lstadd_back(&philo, node);
+		i++;
+	}
+	return (philo);
 }
 
 void make_philo(t_philo *philo, t_data *data)
 {
+	t_philo *curr;
 	int i;
 
+	curr = philo;
 	i = 0;
 	while(i < data->pnum)
 	{
-		pthread_create()
+		printf("philo id: %d\n", curr->id);
+		curr = curr->next;
+		i++;
 	}
 }
 
@@ -74,6 +90,7 @@ int	main(int ac, char *av[])
 	t_data data;
 	t_philo *philo;
 
+	philo = NULL;
 	if (!checker(av, &data))
 		exit(1);
 	data.avstr = join_strings(av);
@@ -85,6 +102,7 @@ int	main(int ac, char *av[])
 	printf("psleep: %d\n",data.psleep);
 	if (data.plimit)
 		printf("plimit: %d\n", data.plimit);
+	philo = make_list(philo, &data);
 	make_philo(philo, &data);
 	return (0);
 }

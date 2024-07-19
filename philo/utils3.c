@@ -1,13 +1,13 @@
 #include "philo.h"
 
-t_philo	*ft_lstnew(void *content)
+t_philo	*ft_lstnew(int content)
 {
 	t_philo	*root;
 
 	root = malloc(sizeof(t_philo));
 	if (!root)
 		return (NULL);
-	root->content = content;
+	root->id = content;
 	root->next = NULL;
 	return (root);
 }
@@ -36,17 +36,50 @@ t_philo	*ft_lstlast(t_philo *lst)
 	return (lst);
 }
 
-void	ft_lstadd_back(t_philo **lst, t_philo *new)
+void ft_lstadd_back(t_philo **lst, t_philo *new)
+{
+    t_philo *curr;
+
+    if (!lst || !new)
+        return;
+    curr = *lst;
+    if (!curr)
+    {
+        *lst = new;
+        new->prev = NULL;
+        new->next = NULL;
+        return;
+    }
+    while (curr->next)
+        curr = curr->next;
+    curr->next = new;
+    new->prev = curr;
+    new->next = NULL;
+}
+
+void	ft_lstclear(t_philo **lst, void (*del)(void*))
 {
 	t_philo	*curr;
+	t_philo	*temp;
 
 	curr = *lst;
-	if (!curr)
+	while (curr)
 	{
-		*lst = new;
-		return ;
+		temp = curr->next;
+		ft_lstdelone(curr, del);
+		curr = temp;
 	}
-	while (curr->next)
-		curr = curr->next;
-	curr->next = new;
+	*lst = NULL;
+}
+
+void	ft_lstdelone(t_philo *lst, void (*del)(void*))
+{
+	(void)del;
+	if (del != NULL)
+	{
+		if (lst)
+		{
+			free(lst);
+		}
+	}
 }
