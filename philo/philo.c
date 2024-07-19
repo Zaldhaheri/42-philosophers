@@ -12,6 +12,13 @@
 
 #include "philo.h"
 
+//allowed functions:
+	// memset, printf, malloc, free, write,
+	// usleep, gettimeofday, pthread_create,
+	// pthread_detach, pthread_join, pthread_mutex_init,
+	// pthread_mutex_destroy, pthread_mutex_lock,
+	// pthread_mutex_unlock
+
 //input:
 	//number_of_philosophers,, time_to_die time_to_eat,,
 	//time_to_sleep
@@ -28,21 +35,44 @@ void set_data(t_data *data)
 {
 	if (data->count == 5 || data->count == 4)
 	{
-		data->pnum = atoi(data->avsplit[0]);
-		data->pdie = atoi(data->avsplit[1]);
-		data->peat = atoi(data->avsplit[2]);
-		data->psleep = atoi(data->avsplit[3]);
+		data->pnum = ft_atoi(data->avsplit[0], data);
+		if (data->pnum > 200)
+			freexit(data->avstr, data->avsplit, data);
+		data->pdie = ft_atoi(data->avsplit[1], data);
+		data->peat = ft_atoi(data->avsplit[2], data);
+		data->psleep = ft_atoi(data->avsplit[3], data);
 		if (data->count == 5)
-			data->plimit = atoi(data->avsplit[4]);
+			data->plimit = ft_atoi(data->avsplit[4], data);
 	}
 	else
 		freexit(data->avstr, data->avsplit, data);
+}
+
+void make_list(t_philo *philo, t_data *data)
+{
+	t_philo *curr;
+	t_philo *prev;
+
+	curr = philo;
+	
+}
+
+void make_philo(t_philo *philo, t_data *data)
+{
+	int i;
+
+	i = 0;
+	while(i < data->pnum)
+	{
+		pthread_create()
+	}
 }
 
 int	main(int ac, char *av[])
 {
 	(void)ac;
 	t_data data;
+	t_philo *philo;
 
 	if (!checker(av, &data))
 		exit(1);
@@ -55,5 +85,6 @@ int	main(int ac, char *av[])
 	printf("psleep: %d\n",data.psleep);
 	if (data.plimit)
 		printf("plimit: %d\n", data.plimit);
+	make_philo(philo, &data);
 	return (0);
 }

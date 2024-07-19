@@ -18,7 +18,7 @@ void	freeing(char *str, char **string, t_data *data)
 void	freexit(char *str, char **string, t_data *data)
 {
 	freeing(str, string, data);
-	exit (1);
+	exit(1);
 }
 
 int	count_word(char const *s, char c, t_data *data)

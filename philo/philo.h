@@ -37,8 +37,17 @@ typedef struct s_data
 typedef struct s_philo
 {
 	pthread_t pid;
+	int id;
+	struct s_philo *next;
+	struct s_philo *prev;
 	int lfork;
 	int rfork;
+} t_philo;
+
+typedef struct s_fork
+{
+	int forkid;
+	int lastused;
 }
 
 size_t	ft_strlen(const char *str);
