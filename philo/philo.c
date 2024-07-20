@@ -50,15 +50,16 @@ void set_data(t_data *data)
 
 void odd_philo(t_philo *philo)
 {
-	printf(MAGENTA "%d lil bro is thinking 💡\n" RESET, philo->id);
+	printf(MAGENTA "%d: lil bro is thinking 💡\n" RESET, philo->id);
+	usleep(200);
 	pthread_mutex_lock(&philo->lfork->fork);
 	pthread_mutex_lock(&philo->rfork->fork);
-	printf(WHITE "%d lil bro took fork %d 🍽\n" RESET, philo->id, philo->lfork->forkid);
-	printf(WHITE "%d lil bro took fork %d 🍽\n" RESET, philo->id, philo->rfork->forkid);
-	printf(YELLOW "%d lil bro eating spaghetti 🍝\n" RESET, philo->id);
+	printf(WHITE "%d: lil bro took fork %d 🍽\n" RESET, philo->id, philo->lfork->forkid);
+	printf(WHITE "%d: lil bro took fork %d 🍽\n" RESET, philo->id, philo->rfork->forkid);
+	printf(YELLOW "%d: lil bro eating spaghetti 🍝\n" RESET, philo->id);
 	pthread_mutex_unlock(&philo->rfork->fork);
 	pthread_mutex_unlock(&philo->lfork->fork);
-	printf(BLUE "%d lil bro sleeping 😴\n" RESET, philo->id);
+	printf(BLUE "%d: lil bro sleeping 😴\n" RESET, philo->id);
 }
 
 void *hungy(void *arg)

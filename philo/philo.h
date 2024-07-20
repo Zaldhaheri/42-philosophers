@@ -30,6 +30,11 @@
 #define CYAN    "\033[36m"
 #define WHITE   "\033[37m"
 
+// #define THINK 
+// #define FORK
+// #define EAT
+// #define SLEEP
+
 typedef struct s_data t_data;
 typedef struct s_philo t_philo;
 typedef struct s_fork t_fork;
@@ -66,6 +71,7 @@ struct s_philo
 struct s_fork
 {
 	int forkid;
+	int last_used;
 	pthread_mutex_t fork;
 };
 
