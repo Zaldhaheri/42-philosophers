@@ -35,6 +35,5 @@ int checker(char *av[], t_data *data)
             return 0;
         data->i++;
     }
-
     return 1;
 }

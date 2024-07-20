@@ -48,61 +48,87 @@ void set_data(t_data *data)
 		freexit(data->avstr, data->avsplit, data);
 }
 
-t_philo *make_list(t_philo *philo, t_data *data)
+void *hungy(void *arg)
 {
-	t_philo *node;
-	int i;
+	t_philo *philo;
 
-	i = 0;
-	while (i < data->pnum)
+	philo = (t_philo *) arg;
+	// philo->lfork = &philo->data->arrfork[philo->id % (philo->data->pnum)];
+	// philo->rfork = &philo->data->arrfork[(philo->id - 1) % (philo->data->pnum)];
+	printf("%d lil bro is thinking\n", philo->id);
+	printf("%d: left fork %d, right fork %d\n", philo->id, philo->lfork->forkid, philo->rfork->forkid);
+	if (!philo->data || !philo)
 	{
-		node = ft_lstnew(i);
-		if (!node)
+		printf("cant acces data\n");
+		exit(1);
+	}
+	return (NULL);
+}
+
+void start_eating(t_data *data)
+{
+	data->i = 0;
+	while(data->i < data->pnum)
+	{
+		//printf("philo id: %d\nfork id: %d\n", data->arrphilo[data->i].id, data->arrfork[data->i].forkid);
+		data->j = pthread_create(&data->arrphilo[data->i].pid, NULL, hungy, &data->arrphilo[data->i]);
+		if (data->j != 0)
 		{
-			ft_lstclear(&philo, free);
-			//free stuff;
+			printf("Failed to create thread: %d\n", data->i);
 			exit(1);
 		}
-		ft_lstadd_back(&philo, node);
-		i++;
+		usleep(100);
+		data->i++;
 	}
-	return (philo);
+	// data->i = 0;
+    // while (data->i < data->pnum)
+	// {
+    //     pthread_join(data->arrphilo[data->i].pid, NULL);
+    //     data->i++;
+    // }
 }
 
-void make_philo(t_philo *philo, t_data *data)
+void create_table(t_data *data)
 {
-	t_philo *curr;
-	int i;
-
-	curr = philo;
-	i = 0;
-	while(i < data->pnum)
+	data->arrphilo = ft_calloc(data->pnum, sizeof(t_philo)); 
+	data->arrfork = ft_calloc(data->pnum, sizeof(t_fork));
+	data->i = 0;
+	while(data->i < data->pnum)
 	{
-		printf("philo id: %d\n", curr->id);
-		curr = curr->next;
-		i++;
+		data->arrphilo[data->i].id = data->i + 1;
+		data->arrfork[data->i].forkid = data->i;
+		data->arrphilo[data->i].data = data;
+		data->i++;
+	}
+	data->i = 0;
+	while(data->i < data->pnum)
+	{
+		data->arrphilo[data->i].lfork = &data->arrfork[(data->i + 1) % data->pnum];
+		data->arrphilo[data->i].rfork = &data->arrfork[(data->i) % data->pnum];
+		data->i++;
 	}
 }
 
-int	main(int ac, char *av[])
+int	main(int ac, char *av[])  
 {
 	(void)ac;
 	t_data data;
-	t_philo *philo;
 
-	philo = NULL;
 	if (!checker(av, &data))
 		exit(1);
 	data.avstr = join_strings(av);
 	data.avsplit = ft_split(data.avstr, ' ', &data);
 	set_data(&data);
 	printf("pnum: %d\n", data.pnum);
-	printf("pdie: %d\n",data.pdie);
-	printf("peat: %d\n",data.peat);
-	printf("psleep: %d\n",data.psleep);
+	printf("pdie: %ld\n",data.pdie);
+	printf("peat: %ld\n",data.peat);
+	printf("psleep: %ld\n",data.psleep);
 	if (data.plimit)
-		printf("plimit: %d\n", data.plimit);
-	philo = make_list(philo, &data);
-	make_philo(philo, &data);
+		printf("plimit: %ld\n", data.plimit);
+	freeing(data.avstr, data.avsplit, &data);
+	create_table(&data);
+	start_eating(&data);
+	// free(data.arrphilo);
+	// free(data.arrfork);
 	return (0);
 }

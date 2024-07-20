@@ -17,38 +17,47 @@
 #include <stdlib.h>
 #include <limits.h>
 #include <pthread.h>
+#include <unistd.h>
+#include <sys/time.h>
 
+typedef struct s_data t_data;
+typedef struct s_philo t_philo;
+typedef struct s_fork t_fork;
 
-typedef struct s_data
+struct s_data
 {
 	int i;
 	int j;
 	int flag;
-	int	pnum; //num of philo
-	int	pdie; //time to die
-	int	peat; //time to eat
-	int	psleep; //time to sleep
-	int	plimit; //limit of eats until stop
 	int count;
 	char *avstr;
 	char **avsplit;
-}	t_data;
+	int		pnum; //num of philo
+	long	pdie; //time to die
+	long	peat; //time to eat
+	long	psleep; //time to sleep
+	long	plimit; //limit of eats until stop
+	t_fork *arrfork;
+	t_philo *arrphilo;
+};
 
-typedef struct s_philo
+struct s_philo
 {
 	pthread_t pid;
 	int id;
-	struct s_philo *next;
-	struct s_philo *prev;
-	int lfork;
-	int rfork;
-} t_philo;
+	long meals;
+	int full;
+	long meal_time;
+	t_fork *lfork;
+	t_fork *rfork;
+	t_data *data;
+};
 
-typedef struct s_fork
+struct s_fork
 {
 	int forkid;
-	int lastused;
-} t_fork;
+	pthread_mutex_t fork;
+};
 
 size_t	ft_strlen(const char *str);
 int	ft_atoi(const char *str, t_data *data);
@@ -56,15 +65,11 @@ char	*ft_strdup(const char *str);
 char	*ft_strjoin(char const *s1, char const *s2);
 char	*join_strings(char *av[]);
 char	**ft_split(char const *s, char c, t_data *data);
-t_philo	*ft_lstnew(int content);
-int	ft_lstsize(t_philo *lst);
-t_philo	*ft_lstlast(t_philo *lst);
-void	ft_lstadd_back(t_philo **lst, t_philo *new);
-void	ft_lstclear(t_philo **lst, void (*del)(void*));
-void	ft_lstdelone(t_philo *lst, void (*del)(void*));
+void	*ft_calloc(size_t count, size_t size);
 
 void	freeing(char *str, char **string, t_data *data);
 void	freexit(char *str, char **string, t_data *data);
+void	freerror(char *str, char **string, t_data *data, char *msg);
 int is_valid(char *av[], t_data *data);
 int checker(char *av[], t_data *data);
 

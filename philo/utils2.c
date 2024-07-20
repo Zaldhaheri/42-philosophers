@@ -21,6 +21,12 @@ void	freexit(char *str, char **string, t_data *data)
 	exit(1);
 }
 
+void	freerror(char *str, char **string, t_data *data, char *msg)
+{
+	printf("%s", msg);
+	freexit(str, string, data);
+}
+
 int	count_word(char const *s, char c, t_data *data)
 {
 	int	d;
