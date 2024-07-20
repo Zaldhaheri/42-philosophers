@@ -48,6 +48,19 @@ void set_data(t_data *data)
 		freexit(data->avstr, data->avsplit, data);
 }
 
+void odd_philo(t_philo *philo)
+{
+	printf(MAGENTA "%d lil bro is thinking 💡\n" RESET, philo->id);
+	pthread_mutex_lock(&philo->lfork->fork);
+	pthread_mutex_lock(&philo->rfork->fork);
+	printf(WHITE "%d lil bro took fork %d 🍽\n" RESET, philo->id, philo->lfork->forkid);
+	printf(WHITE "%d lil bro took fork %d 🍽\n" RESET, philo->id, philo->rfork->forkid);
+	printf(YELLOW "%d lil bro eating spaghetti 🍝\n" RESET, philo->id);
+	pthread_mutex_unlock(&philo->rfork->fork);
+	pthread_mutex_unlock(&philo->lfork->fork);
+	printf(BLUE "%d lil bro sleeping 😴\n" RESET, philo->id);
+}
+
 void *hungy(void *arg)
 {
 	t_philo *philo;
@@ -55,17 +68,20 @@ void *hungy(void *arg)
 	philo = (t_philo *) arg;
 	// philo->lfork = &philo->data->arrfork[philo->id % (philo->data->pnum)];
 	// philo->rfork = &philo->data->arrfork[(philo->id - 1) % (philo->data->pnum)];
-	printf("%d lil bro is thinking\n", philo->id);
-	printf("%d: left fork %d, right fork %d\n", philo->id, philo->lfork->forkid, philo->rfork->forkid);
+	//printf("%d: left fork %d, right fork %d\n", philo->id, philo->lfork->forkid, philo->rfork->forkid);
 	if (!philo->data || !philo)
 	{
 		printf("cant acces data\n");
 		exit(1);
 	}
+	while (1)
+	{
+		odd_philo(philo);
+	}
 	return (NULL);
 }
 
-void start_eating(t_data *data)
+void create_philo(t_data *data)
 {
 	data->i = 0;
 	while(data->i < data->pnum)
@@ -77,9 +93,10 @@ void start_eating(t_data *data)
 			printf("Failed to create thread: %d\n", data->i);
 			exit(1);
 		}
-		usleep(100);
+		usleep(10);
 		data->i++;
 	}
+	while(1);
 	// data->i = 0;
     // while (data->i < data->pnum)
 	// {
@@ -97,6 +114,11 @@ void create_table(t_data *data)
 	{
 		data->arrphilo[data->i].id = data->i + 1;
 		data->arrfork[data->i].forkid = data->i;
+		if(pthread_mutex_init(&data->arrfork[data->i].fork, NULL) != 0)
+		{
+			printf("Error creating fork mutex\n");
+			exit (1);
+		}
 		data->arrphilo[data->i].data = data;
 		data->i++;
 	}
@@ -127,7 +149,7 @@ int	main(int ac, char *av[])
 		printf("plimit: %ld\n", data.plimit);
 	freeing(data.avstr, data.avsplit, &data);
 	create_table(&data);
-	start_eating(&data);
+	create_philo(&data);
 	// free(data.arrphilo);
 	// free(data.arrfork);
 	return (0);
