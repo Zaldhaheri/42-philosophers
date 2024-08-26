@@ -1,0 +1,22 @@
+Parsing:
+1- No negatives
+2- valid number
+    +23% yes
+    +%54 no
+3- int max
+4- skip white space
+
+./philo 5 800 200 200 [5]
+Validate input first.
+Not greater than INTMAX
+Timestamps greater than 60ms
+
+inputs: pnum, pdie, peat, psleep, plimit
+
+mutex
+init: initialize variable as a mutex
+destroy: remove the mutex
+lock: dont allow threads to pass
+unlock: allow threads to pass
+
+mutex error handler
