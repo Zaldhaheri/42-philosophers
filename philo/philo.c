@@ -47,26 +47,92 @@
 // 	printf(BLUE "%d: lil bro sleeping 😴\n" RESET, philo->id);
 // }
 
-void	start_feeding(t_data *data)
+int	get_int(pthread_mutex_t *mutex, int *value)
 {
-	
+	int get;
+	my_mutex(mutex, LOCK);
+	get = *value;
+	my_mutex(mutex, UNLOCK);
+	return (get);
+}
+
+void set_int(pthread_mutex_t *mutex, int *set, int value)
+{
+	my_mutex(mutex, LOCK);
+	*set = value;
+	my_mutex(mutex, UNLOCK);
+}
+
+long	get_time(int i)
+{
+	struct timeval time;
+
+	if (gettimeofday(&time, NULL))
+		freerror(NULL, NULL, NULL, "gettimeofday failed\n");
+	if (i == 1) //seconds
+		return (time.tv_sec + (time.tv_usec / 1e6));
+	else if (i == 2) // milliseconds
+		return ((time.tv_sec * 1e3) + (time.tv_usec / 1e3));
+	else if (i == 3) //microseconds
+		return ((time.tv_sec *1e6) + time.tv_usec);
+	else
+		freerror(NULL, NULL, NULL, "Wrong input in get_time\n");
+}
+
+//void	my_usleep()
+
+void	philo_synch(t_data *data)
+{
+	printf("synching\n");
+	while(!get_int(&data->data_mutex, &data->pready))
+		;
+}
+
+//wait for other philos to synchronize, then start
+void	*start_feeding(void *temp)
+{
+	t_philo *philo;
+
+	philo = (t_philo *)temp;
+	philo_synch(philo->data);
+	printf("in synch\n");
+	//usleep(1000);
+	while(!get_int(&philo->data->data_mutex, &philo->data->end))
+	{
+		printf("im in: %ld\n", get_time());
+		if (philo->full)
+			break;
+		break;
+		//beast_eating
+		//beast_sleeping
+		//beast_thinking
+	}
+	return (NULL);
 }
 
 void	feed_the_beasts(t_data *data)
 {
-	printf("im here\n");
+	data->i = -1;
 	if (data->plimit == 0)
 		return ;
 	else if (data->pnum == 1)
 		return ;
 	else
 	{
-		while (data->i < data->pnum)
-			my_thread(&data->arrphilo[data->i].pid, start_feeding, &data->arrphilo[data->i], CREATE);
+		while (++data->i < data->pnum)
+			my_thread(&data->arrphilo[data->i].pid, start_feeding,
+				&data->arrphilo[data->i], CREATE);
+		data->start = get_time();
+		usleep(100);
+		set_int(&data->data_mutex, &data->pready, 1);
+		data->i = -1;
+		while (++data->i < data->pnum)
+			my_thread(&data->arrphilo[data->i].pid, NULL,
+				NULL, JOIN);
 	}
 }
 
-int	main(int ac, char *av[])  
+int	main(int ac, char *av[])
 {
 	(void)ac;
 	t_data data;

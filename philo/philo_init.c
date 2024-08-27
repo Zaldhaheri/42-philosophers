@@ -6,7 +6,7 @@
 /*   By: zaldhahe <zaldhahe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 15:26:24 by zaldhahe          #+#    #+#             */
-/*   Updated: 2024/08/27 15:43:19 by zaldhahe         ###   ########.fr       */
+/*   Updated: 2024/08/27 18:23:47 by zaldhahe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,7 @@ void data_init(t_data *data)
 	data->arrphilo = ft_calloc(data->pnum, sizeof(t_philo)); 
 	data->arrfork = ft_calloc(data->pnum, sizeof(t_fork));
 	my_mutex(&data->data_mutex, INIT);
+	data->pready = 0;
     data->i = 0;
 	while(data->i < data->pnum)
 	{

@@ -61,6 +61,7 @@ struct s_data
 	long	peat; //time to eat
 	long	psleep; //time to sleep
 	long	plimit; //limit of eats until stop
+	int		pready;	//for synchronization
 	long	start;
 	int		end;
 	pthread_mutex_t data_mutex;
