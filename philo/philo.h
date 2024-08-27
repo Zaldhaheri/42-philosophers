@@ -61,6 +61,9 @@ struct s_data
 	long	peat; //time to eat
 	long	psleep; //time to sleep
 	long	plimit; //limit of eats until stop
+	long	start;
+	int		end;
+	pthread_mutex_t data_mutex;
 	t_fork *arrfork; //arr struct of forks
 	t_philo *arrphilo; //arr struct of philos
 };
@@ -69,11 +72,11 @@ struct s_philo
 {
 	pthread_t pid; //process id
 	int id; //location on table
-	long meals; //amount ate
 	int full; //flag
+	long meals; //amount ate
 	long meal_time; //time eating
-	t_fork *lfork; //right fork
-	t_fork *rfork; //left fork
+	t_fork *fork_1; //first choice fork
+	t_fork *fork_2; //second choice fork
 	t_data *data; //access to main data
 };
 
@@ -84,6 +87,26 @@ struct s_fork
 	pthread_mutex_t fork;
 };
 
+
+//philo_init
+void	data_init(t_data *data);
+void	philo_init(t_data *data);
+void	philo_setfork(t_philo *philo, t_fork *arrfork, int x);
+void	set_data(t_data *data);
+
+//parsing
+void	freeing(char *str, char **string, t_data *data);
+void	freexit(char *str, char **string, t_data *data);
+void	freerror(char *str, char **string, t_data *data, char *msg);
+int 	is_valid(char *av[], t_data *data);
+int 	checker(char *av[], t_data *data);
+
+//philo_utils
+void my_mutex(pthread_mutex_t *mutex, int op);
+void mutex_error_handler(int status, int op);
+void my_thread(pthread_t *thread, void *(*func)(void *), void *data, int op);
+void thread_error_handler(int status, int op);
+
 //utils
 size_t	ft_strlen(const char *str);
 int		ft_atoi(const char *str, t_data *data);
@@ -92,12 +115,5 @@ char	*ft_strjoin(char const *s1, char const *s2);
 char	*join_strings(char *av[]);
 char	**ft_split(char const *s, char c, t_data *data);
 void	*ft_calloc(size_t count, size_t size);
-
-//parsing
-void	freeing(char *str, char **string, t_data *data);
-void	freexit(char *str, char **string, t_data *data);
-void	freerror(char *str, char **string, t_data *data, char *msg);
-int 	is_valid(char *av[], t_data *data);
-int 	checker(char *av[], t_data *data);
 
 #endif

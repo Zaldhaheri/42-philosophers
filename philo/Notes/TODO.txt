@@ -20,3 +20,12 @@ lock: dont allow threads to pass
 unlock: allow threads to pass
 
 mutex error handler
+
+algorithm:
+Odd philos pick up left fork first
+Even philos pick up right fork first
+who ever gets the fork first between them, gets to eat
+
+create monitor thread for death checking
+synchornize the beginning of the simulation
+pthread_create -> philo starts running
