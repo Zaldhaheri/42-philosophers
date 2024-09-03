@@ -38,6 +38,12 @@
 #define CREATE 4
 #define JOIN 5
 #define DETACH 6
+#define EATING 7
+#define SLEEPING 8
+#define THINKING 9
+#define FIRST_FORK 10
+#define SECOND_FORK 11
+#define DIED 12
 
 // #define THINK 
 // #define FORK
@@ -65,6 +71,7 @@ struct s_data
 	long	start;
 	int		end;
 	pthread_mutex_t data_mutex;
+	pthread_mutex_t write_mutex;
 	t_fork *arrfork; //arr struct of forks
 	t_philo *arrphilo; //arr struct of philos
 };
@@ -78,6 +85,7 @@ struct s_philo
 	long meal_time; //time eating
 	t_fork *fork_1; //first choice fork
 	t_fork *fork_2; //second choice fork
+	pthread_mutex_t philo_mutex;
 	t_data *data; //access to main data
 };
 
@@ -85,7 +93,7 @@ struct s_fork
 {
 	int forkid; //fork location on arr
 	int last_used; //for priority
-	pthread_mutex_t fork;
+	pthread_mutex_t fork_mutex;
 };
 
 
@@ -107,6 +115,13 @@ void my_mutex(pthread_mutex_t *mutex, int op);
 void mutex_error_handler(int status, int op);
 void my_thread(pthread_t *thread, void *(*func)(void *), void *data, int op);
 void thread_error_handler(int status, int op);
+void my_usleep(long usec, t_data *data);
+
+//setters getters
+long	get_time(int i);
+int	get_int(pthread_mutex_t *mutex, int *value);
+void set_int(pthread_mutex_t *mutex, int *set, int value);
+void set_long(pthread_mutex_t *mutex, long *set, long value);
 
 //utils
 size_t	ft_strlen(const char *str);

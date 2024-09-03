@@ -31,21 +31,69 @@
 	//timestamp_in_ms X is thinking
 	//timestamp_in_ms X died
 
+void	my_write(int status, t_philo *philo)
+{
+	long time;
 
+	time = get_time(2) - philo->data->start;
+	if (philo->full)
+		return ;
+	my_mutex(&philo->data->write_mutex, LOCK);
+	if (!get_int(&philo->data->data_mutex, &philo->data->end))
+	{
+		if (FIRST_FORK == status)
+			printf(BLUE "%-6ld ms"RESET": %d has taken fork %d\n", time, philo->id, philo->fork_1->forkid);
+		else if (SECOND_FORK == status)
+			printf(BLUE "%-6ld ms"RESET": %d has taken fork %d\n", time, philo->id, philo->fork_2->forkid);
+		else if (EATING == status)
+			printf(BLUE "%-6ld ms"RESET": %d is eating\n", time, philo->id);
+		else if (SLEEPING == status)
+			printf(BLUE "%-6ld ms"RESET": %d is sleeping\n", time, philo->id);
+		else if (THINKING == status)
+			printf(BLUE "%-6ld ms"RESET": %d is thinking\n", time, philo->id);
+		else if (DIED == status)
+			printf(BLUE "%-6ld ms"RESET": %d died\n", time, philo->id);
+	}
+	my_mutex(&philo->data->write_mutex, UNLOCK);
+}
 
-// void odd_philo(t_philo *philo)
-// {
-// 	printf(MAGENTA "%d: lil bro is thinking 💡\n" RESET, philo->id);
-// 	usleep(200);
-// 	pthread_mutex_lock(&philo->lfork->fork);
-// 	pthread_mutex_lock(&philo->rfork->fork);
-// 	printf(WHITE "%d: lil bro took fork %d 🍽\n" RESET, philo->id, philo->lfork->forkid);
-// 	printf(WHITE "%d: lil bro took fork %d 🍽\n" RESET, philo->id, philo->rfork->forkid);
-// 	printf(YELLOW "%d: lil bro eating spaghetti 🍝\n" RESET, philo->id);
-// 	pthread_mutex_unlock(&philo->rfork->fork);
-// 	pthread_mutex_unlock(&philo->lfork->fork);
-// 	printf(BLUE "%d: lil bro sleeping 😴\n" RESET, philo->id);
-// }
+long	get_time(int i)
+{
+	struct timeval time;
+
+	if (gettimeofday(&time, NULL))
+		freerror(NULL, NULL, NULL, "gettimeofday failed\n");
+	if (i == 1) //seconds
+		return (time.tv_sec + (time.tv_usec / 1e6));
+	else if (i == 2) // milliseconds
+		return ((time.tv_sec * 1e3) + (time.tv_usec / 1e3));
+	else if (i == 3) //microseconds
+		return ((time.tv_sec *1e6) + time.tv_usec);
+	else
+		freerror(NULL, NULL, NULL, "Wrong input in get_time\n");
+	return (999);
+}
+
+void my_usleep(long usec, t_data *data)
+{
+	long start;
+	long curr;
+	long rem;
+
+	start = get_time(3);
+	while(get_time(3) - start < usec)
+	{
+		if (get_int(&data->data_mutex, &data->end))
+			break;
+		curr = get_time(3) - start;
+		rem = usec - curr;
+		if (rem > 1e3)
+			usleep(usec / 2);
+		else
+			while(get_time(3) - start < usec)
+				;
+	}
+}
 
 int	get_int(pthread_mutex_t *mutex, int *value)
 {
@@ -63,29 +111,42 @@ void set_int(pthread_mutex_t *mutex, int *set, int value)
 	my_mutex(mutex, UNLOCK);
 }
 
-long	get_time(int i)
+void set_long(pthread_mutex_t *mutex, long *set, long value)
 {
-	struct timeval time;
-
-	if (gettimeofday(&time, NULL))
-		freerror(NULL, NULL, NULL, "gettimeofday failed\n");
-	if (i == 1) //seconds
-		return (time.tv_sec + (time.tv_usec / 1e6));
-	else if (i == 2) // milliseconds
-		return ((time.tv_sec * 1e3) + (time.tv_usec / 1e3));
-	else if (i == 3) //microseconds
-		return ((time.tv_sec *1e6) + time.tv_usec);
-	else
-		freerror(NULL, NULL, NULL, "Wrong input in get_time\n");
+	my_mutex(mutex, LOCK);
+	*set = value;
+	my_mutex(mutex, UNLOCK);
 }
-
-//void	my_usleep()
 
 void	philo_synch(t_data *data)
 {
-	printf("synching\n");
 	while(!get_int(&data->data_mutex, &data->pready))
 		;
+}
+
+void thinking(t_philo *philo)
+{
+	my_write(THINKING, philo);
+}
+
+//grab forks
+//eat print
+//release fork
+void spaghetti(t_philo *philo)
+{
+	my_mutex(&philo->fork_1->fork_mutex, LOCK);
+	my_write(FIRST_FORK, philo);
+	my_mutex(&philo->fork_2->fork_mutex, LOCK);
+	my_write(SECOND_FORK, philo);
+	set_long(&philo->philo_mutex, &philo->meal_time, get_time(2));
+	philo->meals++;
+	my_write(EATING, philo);
+	//my_usleep(philo->data->peat, philo->data);
+	usleep(philo->data->peat);
+	if (philo->data->plimit > 0 && philo->meals == philo->data->plimit)
+		set_int(&philo->philo_mutex, &philo->full, 1);
+	my_mutex(&philo->fork_1->fork_mutex, UNLOCK);
+	my_mutex(&philo->fork_2->fork_mutex, UNLOCK);
 }
 
 //wait for other philos to synchronize, then start
@@ -95,17 +156,15 @@ void	*start_feeding(void *temp)
 
 	philo = (t_philo *)temp;
 	philo_synch(philo->data);
-	printf("in synch\n");
-	//usleep(1000);
 	while(!get_int(&philo->data->data_mutex, &philo->data->end))
 	{
-		printf("im in: %ld\n", get_time());
 		if (philo->full)
 			break;
-		break;
-		//beast_eating
-		//beast_sleeping
-		//beast_thinking
+		spaghetti(philo);
+		my_write(SLEEPING, philo);
+		//my_usleep(philo->data->psleep, philo->data);
+		usleep(philo->data->psleep);
+		thinking(philo);
 	}
 	return (NULL);
 }
@@ -122,10 +181,11 @@ void	feed_the_beasts(t_data *data)
 		while (++data->i < data->pnum)
 			my_thread(&data->arrphilo[data->i].pid, start_feeding,
 				&data->arrphilo[data->i], CREATE);
-		data->start = get_time();
+		data->start = get_time(2);
 		usleep(100);
-		set_int(&data->data_mutex, &data->pready, 1);
+		set_int(&data->data_mutex, &data->pready, 1); //start the threads
 		data->i = -1;
+		usleep(100);
 		while (++data->i < data->pnum)
 			my_thread(&data->arrphilo[data->i].pid, NULL,
 				NULL, JOIN);

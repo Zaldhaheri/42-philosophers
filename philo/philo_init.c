@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo_init.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zaldhahe <zaldhahe@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 15:26:24 by zaldhahe          #+#    #+#             */
-/*   Updated: 2024/08/27 18:23:47 by zaldhahe         ###   ########.fr       */
+/*   Updated: 2024/09/03 19:46:04 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,15 +51,19 @@ void	philo_setfork(t_philo *philo, t_fork *arrfork, int x)
 void	philo_init(t_data *data)
 {
 	t_philo *philo;
+	t_fork *fork;
 
 	data->i = 0;
 	while (data->i < data->pnum)
 	{
 		philo = &data->arrphilo[data->i];
+		fork = &data->arrfork[data->i];
+		fork->forkid = data->i;
 		philo->id = data->i + 1;
 		philo->full = 0;
 		philo->meals = 0;
 		philo->data = data;
+		my_mutex(&philo->philo_mutex, INIT);
 		philo_setfork(philo, data->arrfork, data->i);
 		data->i++;
 	}
@@ -72,11 +76,12 @@ void data_init(t_data *data)
 	data->arrphilo = ft_calloc(data->pnum, sizeof(t_philo)); 
 	data->arrfork = ft_calloc(data->pnum, sizeof(t_fork));
 	my_mutex(&data->data_mutex, INIT);
+	my_mutex(&data->write_mutex, INIT);
 	data->pready = 0;
     data->i = 0;
 	while(data->i < data->pnum)
 	{
-		my_mutex(&data->arrfork[data->i].fork, INIT);
+		my_mutex(&data->arrfork[data->i].fork_mutex, INIT);
 		data->i++;
 	}
 	philo_init(data);
