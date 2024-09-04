@@ -35,24 +35,24 @@ void	my_write(int status, t_philo *philo)
 {
 	long time;
 
-	time = get_time(2) - philo->data->start;
 	if (philo->full)
 		return ;
 	my_mutex(&philo->data->write_mutex, LOCK);
+	time = get_time(2) - philo->data->start;
 	if (!get_int(&philo->data->data_mutex, &philo->data->end))
 	{
 		if (FIRST_FORK == status)
-			printf(BLUE "%-6ld ms"RESET": %d has taken fork %d\n", time, philo->id, philo->fork_1->forkid);
+			printf(BLUE "%-6ld ms"RESET": "WHITE" %d has taken fork %d\n" RESET, time, philo->id, philo->fork_1->forkid);
 		else if (SECOND_FORK == status)
-			printf(BLUE "%-6ld ms"RESET": %d has taken fork %d\n", time, philo->id, philo->fork_2->forkid);
+			printf(BLUE "%-6ld ms"RESET": "WHITE" %d has taken fork %d\n" RESET, time, philo->id, philo->fork_2->forkid);
 		else if (EATING == status)
-			printf(BLUE "%-6ld ms"RESET": %d is eating\n", time, philo->id);
+			printf(BLUE "%-6ld ms"RESET": "GREEN" %d is eating\n" RESET, time, philo->id);
 		else if (SLEEPING == status)
-			printf(BLUE "%-6ld ms"RESET": %d is sleeping\n", time, philo->id);
+			printf(BLUE "%-6ld ms"RESET": "CYAN" %d is sleeping\n" RESET, time, philo->id);
 		else if (THINKING == status)
-			printf(BLUE "%-6ld ms"RESET": %d is thinking\n", time, philo->id);
+			printf(BLUE "%-6ld ms"RESET": "YELLOW" %d is thinking\n"RESET, time, philo->id);
 		else if (DIED == status)
-			printf(BLUE "%-6ld ms"RESET": %d died\n", time, philo->id);
+			printf(BLUE "%-6ld ms"RESET": "RED" %d died\n"RESET, time, philo->id);
 	}
 	my_mutex(&philo->data->write_mutex, UNLOCK);
 }
@@ -76,23 +76,20 @@ long	get_time(int i)
 
 void my_usleep(long usec, t_data *data)
 {
-	long start;
-	long curr;
-	long rem;
-
-	start = get_time(3);
-	while(get_time(3) - start < usec)
-	{
-		if (get_int(&data->data_mutex, &data->end))
-			break;
-		curr = get_time(3) - start;
-		rem = usec - curr;
-		if (rem > 1e3)
-			usleep(usec / 2);
-		else
-			while(get_time(3) - start < usec)
-				;
-	}
+    long start;
+    long curr;
+    
+    start = get_time(3);  // Get the current time in microseconds
+    while (get_time(3) - start < usec)  // Busy-wait loop for small periods
+    {
+        if (get_int(&data->data_mutex, &data->end))
+            break;
+        curr = get_time(3) - start;
+        long rem = usec - curr;
+        usleep(10);
+        if (rem > 1000)  // Sleep only if more than 1 ms is remaining
+            usleep(rem / 2);  // Sleep for half the remaining time to avoid over-sleeping
+    }
 }
 
 int	get_int(pthread_mutex_t *mutex, int *value)
@@ -141,8 +138,7 @@ void spaghetti(t_philo *philo)
 	set_long(&philo->philo_mutex, &philo->meal_time, get_time(2));
 	philo->meals++;
 	my_write(EATING, philo);
-	//my_usleep(philo->data->peat, philo->data);
-	usleep(philo->data->peat);
+	my_usleep(philo->data->peat * 1e3, philo->data);
 	if (philo->data->plimit > 0 && philo->meals == philo->data->plimit)
 		set_int(&philo->philo_mutex, &philo->full, 1);
 	my_mutex(&philo->fork_1->fork_mutex, UNLOCK);
@@ -162,8 +158,7 @@ void	*start_feeding(void *temp)
 			break;
 		spaghetti(philo);
 		my_write(SLEEPING, philo);
-		//my_usleep(philo->data->psleep, philo->data);
-		usleep(philo->data->psleep);
+		my_usleep(philo->data->psleep * 1e3, philo->data);
 		thinking(philo);
 	}
 	return (NULL);
@@ -182,10 +177,10 @@ void	feed_the_beasts(t_data *data)
 			my_thread(&data->arrphilo[data->i].pid, start_feeding,
 				&data->arrphilo[data->i], CREATE);
 		data->start = get_time(2);
-		usleep(100);
+		//usleep(100);
 		set_int(&data->data_mutex, &data->pready, 1); //start the threads
 		data->i = -1;
-		usleep(100);
+		//usleep(100);
 		while (++data->i < data->pnum)
 			my_thread(&data->arrphilo[data->i].pid, NULL,
 				NULL, JOIN);
