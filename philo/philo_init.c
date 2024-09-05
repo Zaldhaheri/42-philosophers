@@ -19,9 +19,9 @@ void set_data(t_data *data)
 		data->pnum = ft_atoi(data->avsplit[0], data);
 		if (data->pnum > 200)
 			freexit(data->avstr, data->avsplit, data);
-		data->pdie = ft_atoi(data->avsplit[1], data);
-		data->peat = ft_atoi(data->avsplit[2], data);
-		data->psleep = ft_atoi(data->avsplit[3], data);
+		data->pdie = ft_atoi(data->avsplit[1], data) * 1000;
+		data->peat = ft_atoi(data->avsplit[2], data) * 1000;
+		data->psleep = ft_atoi(data->avsplit[3], data) * 1000;
 		if (data->count == 5)
 			data->plimit = ft_atoi(data->avsplit[4], data);
         else
@@ -73,6 +73,7 @@ void	philo_init(t_data *data)
 void data_init(t_data *data)
 {
 	data->end = 0;
+	data->running_threads = 0;
 	data->arrphilo = ft_calloc(data->pnum, sizeof(t_philo)); 
 	data->arrfork = ft_calloc(data->pnum, sizeof(t_fork));
 	my_mutex(&data->data_mutex, INIT);

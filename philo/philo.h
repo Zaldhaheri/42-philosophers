@@ -70,6 +70,8 @@ struct s_data
 	int		pready;	//for synchronization
 	long	start;
 	int		end;
+	long	running_threads;
+	pthread_t monitor;
 	pthread_mutex_t data_mutex;
 	pthread_mutex_t write_mutex;
 	t_fork *arrfork; //arr struct of forks
