@@ -74,22 +74,45 @@ long	get_time(int i)
 	return (999);
 }
 
+// void my_usleep(long usec, t_data *data)
+// {
+//     long start;
+//     long curr;
+    
+//     start = get_time(3);  // Get the current time in microseconds
+//     while (get_time(3) - start < usec)  // Busy-wait loop for small periods
+//     {
+//         if (get_int(&data->data_mutex, &data->end))
+//             break;
+//         curr = get_time(3) - start;
+//         long rem = usec - curr;
+//         usleep(10);
+//         if (rem > 1000)  // Sleep only if more than 1 ms is remaining
+//             usleep(rem / 2);  // Sleep for half the remaining time to avoid over-sleeping
+//     }
+// }
+
 void my_usleep(long usec, t_data *data)
 {
-    long start;
-    long curr;
-    
-    start = get_time(3);  // Get the current time in microseconds
-    while (get_time(3) - start < usec)  // Busy-wait loop for small periods
-    {
-        if (get_int(&data->data_mutex, &data->end))
-            break;
-        curr = get_time(3) - start;
-        long rem = usec - curr;
-        usleep(10);
-        if (rem > 1000)  // Sleep only if more than 1 ms is remaining
-            usleep(rem / 2);  // Sleep for half the remaining time to avoid over-sleeping
-    }
+	long start;
+	long curr;
+	long rem;
+
+	start = get_time(3);
+	while(get_time(3) - start < usec)
+	{
+		if (get_int(&data->data_mutex, &data->end))
+           break;
+		curr = get_time(3) - start;
+		rem = usec - curr;
+		if (rem > 1000)
+			usleep(rem / 2);
+		else
+		{
+			while (get_time(3) - start < usec)
+				;
+		}
+	}
 }
 
 int	get_int(pthread_mutex_t *mutex, int *value)
