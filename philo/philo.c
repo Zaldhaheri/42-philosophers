@@ -36,7 +36,7 @@ void	*start_feeding(void *temp)
 	philo_synch(philo->data);
 	set_long(&philo->philo_mutex, &philo->meal_time, get_time(2));
 	inc_long(&philo->data->data_mutex, &philo->data->running_threads);
-	philo_desync(philo);
+	//philo_desync(philo);
 	while (!get_int(&philo->data->data_mutex, &philo->data->end))
 	{
 		if (philo->full)
@@ -74,6 +74,7 @@ void	feed_the_beasts(t_data *data)
 	{
 		my_thread(&data->arrphilo[0].pid, one_philo,
 			&data->arrphilo[0], CREATE);
+		my_thread(&data->arrphilo[0].pid, NULL, NULL, DETACH);
 		data->start = get_time(2);
 		my_usleep(data->pdie * 1.5, data);
 	}
@@ -89,7 +90,27 @@ void	feed_the_beasts(t_data *data)
 		while (++data->i < data->pnum)
 			my_thread(&data->arrphilo[data->i].pid, NULL,
 				NULL, JOIN);
+		my_thread(&data->monitor, NULL, NULL, DETACH);
 	}
+}
+
+void destroy_mutexes(t_data *data)
+{
+    int i;
+
+    // Destroy all fork mutexes
+	printf("forks\n");
+    for (i = 0; i < data->pnum; i++)
+        	my_mutex(&data->arrfork[i].fork_mutex, DESTROY);
+    // Destroy philosopher mutexes (if applicable)
+	printf("philos\n");
+    for (i = 0; i < data->pnum; i++)
+        my_mutex(&data->arrphilo[i].philo_mutex, DESTROY);
+	
+	printf("rest\n");
+    // Destroy other mutexes
+    my_mutex(&data->data_mutex, DESTROY);
+    my_mutex(&data->write_mutex, DESTROY);
 }
 
 int	main(int ac, char *av[])
@@ -105,5 +126,8 @@ int	main(int ac, char *av[])
 	freeing(data.avstr, data.avsplit, &data);
 	data_init(&data);
 	feed_the_beasts(&data);
+	//destroy_mutexes(&data);
+	free_data(&data);
+	printf("here\n");
 	return (0);
 }

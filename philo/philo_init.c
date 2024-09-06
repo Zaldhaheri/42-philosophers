@@ -86,3 +86,11 @@ void	data_init(t_data *data)
 	}
 	philo_init(data);
 }
+
+void	free_data(t_data *data)
+{
+    if (data->arrphilo)
+        free(data->arrphilo);
+    if (data->arrfork)
+        free(data->arrfork);
+}

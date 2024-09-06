@@ -98,6 +98,7 @@ void	data_init(t_data *data);
 void	philo_init(t_data *data);
 void	philo_setfork(t_philo *philo, t_fork *arrfork, int x);
 void	set_data(t_data *data);
+void	free_data(t_data *data);
 
 //parsing
 void	freeing(char *str, char **string, t_data *data);
