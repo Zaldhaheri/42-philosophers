@@ -12,7 +12,7 @@
 
 #include "philo.h"
 
-void set_data(t_data *data)
+void	set_data(t_data *data)
 {
 	if (data->count == 5 || data->count == 4)
 	{
@@ -24,8 +24,8 @@ void set_data(t_data *data)
 		data->psleep = ft_atoi(data->avsplit[3], data) * 1000;
 		if (data->count == 5)
 			data->plimit = ft_atoi(data->avsplit[4], data);
-        else
-            data->plimit = -1;
+		else
+			data->plimit = -1;
 	}
 	else
 	{
@@ -36,12 +36,12 @@ void set_data(t_data *data)
 
 void	philo_setfork(t_philo *philo, t_fork *arrfork, int x)
 {
-	if (philo->id % 2) //odd
+	if (philo->id % 2)
 	{
-		philo->fork_1 = &arrfork[(x + 1) % philo->data->pnum]; //left fork
-		philo->fork_2 = &arrfork[x]; //right fork
+		philo->fork_1 = &arrfork[(x + 1) % philo->data->pnum];
+		philo->fork_2 = &arrfork[x];
 	}
-	else //even
+	else
 	{
 		philo->fork_1 = &arrfork[x];
 		philo->fork_2 = &arrfork[(x + 1) % philo->data->pnum];
@@ -50,8 +50,8 @@ void	philo_setfork(t_philo *philo, t_fork *arrfork, int x)
 
 void	philo_init(t_data *data)
 {
-	t_philo *philo;
-	t_fork *fork;
+	t_philo	*philo;
+	t_fork	*fork;
 
 	data->i = 0;
 	while (data->i < data->pnum)
@@ -67,20 +67,19 @@ void	philo_init(t_data *data)
 		philo_setfork(philo, data->arrfork, data->i);
 		data->i++;
 	}
-
 }
 
-void data_init(t_data *data)
+void	data_init(t_data *data)
 {
 	data->end = 0;
 	data->running_threads = 0;
-	data->arrphilo = ft_calloc(data->pnum, sizeof(t_philo)); 
+	data->arrphilo = ft_calloc(data->pnum, sizeof(t_philo));
 	data->arrfork = ft_calloc(data->pnum, sizeof(t_fork));
 	my_mutex(&data->data_mutex, INIT);
 	my_mutex(&data->write_mutex, INIT);
 	data->pready = 0;
-    data->i = 0;
-	while(data->i < data->pnum)
+	data->i = 0;
+	while (data->i < data->pnum)
 	{
 		my_mutex(&data->arrfork[data->i].fork_mutex, INIT);
 		data->i++;

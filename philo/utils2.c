@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils2.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: zaldhahe <zaldhahe@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/09/06 22:42:10 by zaldhahe          #+#    #+#             */
+/*   Updated: 2024/09/06 22:42:10 by zaldhahe         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
 
 void	freeing(char *str, char **string, t_data *data)
@@ -13,18 +25,6 @@ void	freeing(char *str, char **string, t_data *data)
 			free(string[i]);
 		free(string);
 	}
-}
-
-void	freexit(char *str, char **string, t_data *data)
-{
-	freeing(str, string, data);
-	exit(1);
-}
-
-void	freerror(char *str, char **string, t_data *data, char *msg)
-{
-	printf("%s", msg);
-	freexit(str, string, data);
 }
 
 int	count_word(char const *s, char c, t_data *data)

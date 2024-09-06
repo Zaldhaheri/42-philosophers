@@ -12,7 +12,8 @@
 
 NAME = philo
 
-SRC = philo.c parsing.c philo_init.c philo_utils.c utils1.c utils2.c \
+SRC = philo.c monitor.c parsing.c philo_init.c philo_utils1.c philo_utils2.c philo_utils3.c \
+		utils1.c utils2.c utils3.c 
 
 OBJ = $(SRC:.c=.o)
 

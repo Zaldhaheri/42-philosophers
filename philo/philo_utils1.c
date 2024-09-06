@@ -12,7 +12,7 @@
 
 #include "philo.h"
 
-void mutex_error_handler(int status, int op)
+void	mutex_error_handler(int status, int op)
 {
 	if (0 == status)
 		return ;
@@ -30,7 +30,7 @@ void mutex_error_handler(int status, int op)
 		freerror(NULL, NULL, NULL, "locked mutex\n");
 }
 
-void my_mutex(pthread_mutex_t *mutex, int op)
+void	my_mutex(pthread_mutex_t *mutex, int op)
 {
 	if (LOCK == op)
 		mutex_error_handler(pthread_mutex_lock(mutex), op);
@@ -44,14 +44,15 @@ void my_mutex(pthread_mutex_t *mutex, int op)
 		freerror(NULL, NULL, NULL, "Wrong op for my_mutex\n");
 }
 
-void thread_error_handler(int status, int op)
+void	thread_error_handler(int status, int op)
 {
 	if (0 == status)
 		return ;
 	if (EAGAIN == status)
 		freerror(NULL, NULL, NULL, "no resources for another thread\n");
 	else if (EPERM == status)
-		freerror(NULL, NULL, NULL, "caller doesnt have appropriate permission\n");
+		freerror(NULL, NULL, NULL,
+			"caller doesnt have appropriate permission\n");
 	else if (EINVAL == status && CREATE == op)
 		freerror(NULL, NULL, NULL, "attr value invalid\n");
 	else if (EINVAL == status && (JOIN == op || DETACH == op))
@@ -62,7 +63,7 @@ void thread_error_handler(int status, int op)
 		freerror(NULL, NULL, NULL, "deadlock thread detected\n");
 }
 
-void my_thread(pthread_t *thread, void *(*func)(void *), void *data, int op)
+void	my_thread(pthread_t *thread, void *(*func)(void *), void *data, int op)
 {
 	if (CREATE == op)
 		thread_error_handler(pthread_create(thread, NULL, func, data), op);
