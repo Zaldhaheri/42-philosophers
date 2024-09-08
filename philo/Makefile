@@ -19,14 +19,14 @@ OBJ = $(SRC:.c=.o)
 
 CC = cc
 
-CFLAGS = -Wall -Werror -Wextra 
+CFLAGS = -Wall -Werror -Wextra -pthread -g3
 
 COMPILE = $(CC) $(CFLAGS)
 
 all : $(NAME)
 
-$(NAME) : $(OBJ)
-	$(COMPILE) $(OBJ) -lpthread -o $(NAME)
+$(NAME) : $(OBJ) 
+	$(COMPILE) $(OBJ) -o $(NAME)
 
 clean : 
 	rm -f $(OBJ)

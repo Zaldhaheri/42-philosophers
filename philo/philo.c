@@ -74,9 +74,10 @@ void	feed_the_beasts(t_data *data)
 	{
 		my_thread(&data->arrphilo[0].pid, one_philo,
 			&data->arrphilo[0], CREATE);
-		my_thread(&data->arrphilo[0].pid, NULL, NULL, DETACH);
 		data->start = get_time(2);
 		my_usleep(data->pdie * 1.5, data);
+		set_int(&data->data_mutex, &data->end, 1);
+		my_thread(&data->arrphilo[0].pid, NULL, NULL, JOIN);
 	}
 	else
 	{
