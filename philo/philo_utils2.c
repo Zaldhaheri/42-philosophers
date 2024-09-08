@@ -6,7 +6,7 @@
 /*   By: zaldhahe <zaldhahe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/06 22:44:54 by zaldhahe          #+#    #+#             */
-/*   Updated: 2024/09/06 22:56:41 by zaldhahe         ###   ########.fr       */
+/*   Updated: 2024/09/08 19:41:46 by zaldhahe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ void	set_long(pthread_mutex_t *mutex, long *set, long value)
 
 long	get_long(pthread_mutex_t *mutex, long *value)
 {
-	int	r;
+	long	r;
 
 	my_mutex(mutex, LOCK);
 	r = *value;
