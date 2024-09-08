@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: zaldhahe <zaldhahe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/07/07 21:04:19 by zaldhahe          #+#    #+#             */
-/*   Updated: 2024/07/16 23:26:25 by marvin           ###   ########.fr       */
+/*   Created: 2024/09/08 17:21:17 by zaldhahe          #+#    #+#             */
+/*   Updated: 2024/09/08 17:21:17 by zaldhahe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,6 +99,7 @@ void	philo_init(t_data *data);
 void	philo_setfork(t_philo *philo, t_fork *arrfork, int x);
 void	set_data(t_data *data);
 void	free_data(t_data *data);
+void	destroy_mutexes(t_data *data);
 
 //parsing
 void	freeing(char *str, char **string, t_data *data);

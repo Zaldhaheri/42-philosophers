@@ -6,7 +6,7 @@
 /*   By: zaldhahe <zaldhahe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/06 22:50:17 by zaldhahe          #+#    #+#             */
-/*   Updated: 2024/09/06 23:00:37 by zaldhahe         ###   ########.fr       */
+/*   Updated: 2024/09/08 17:25:39 by zaldhahe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,6 @@ void	my_write(int status, t_philo *philo)
 {
 	long	time;
 
-	if (philo->full)
-		return ;
 	my_mutex(&philo->data->write_mutex, LOCK);
 	time = get_time(2) - philo->data->start;
 	if (!get_int(&philo->data->data_mutex, &philo->data->end))

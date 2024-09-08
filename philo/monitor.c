@@ -6,7 +6,7 @@
 /*   By: zaldhahe <zaldhahe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/06 22:46:13 by zaldhahe          #+#    #+#             */
-/*   Updated: 2024/09/06 22:55:19 by zaldhahe         ###   ########.fr       */
+/*   Updated: 2024/09/08 18:33:38 by zaldhahe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ void	*monitor_beasts(void *temp)
 			{
 				my_write(DIED, data->arrphilo + data->j);
 				set_int(&data->data_mutex, &data->end, 1);
+				break ;
 			}
 		}
 	}
@@ -83,5 +84,5 @@ void	sync_think(t_philo *philo)
 	think = eat * 2 - sleep;
 	if (think < 0)
 		think = 0;
-	my_usleep(think * 0.42, philo->data);
+	my_usleep(think * 0.03, philo->data);
 }

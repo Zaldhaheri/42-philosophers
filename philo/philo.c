@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: zaldhahe <zaldhahe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/07/07 21:04:16 by zaldhahe          #+#    #+#             */
-/*   Updated: 2024/07/16 23:29:20 by marvin           ###   ########.fr       */
+/*   Created: 2024/09/08 17:21:08 by zaldhahe          #+#    #+#             */
+/*   Updated: 2024/09/08 17:21:08 by zaldhahe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ void	*start_feeding(void *temp)
 	philo_synch(philo->data);
 	set_long(&philo->philo_mutex, &philo->meal_time, get_time(2));
 	inc_long(&philo->data->data_mutex, &philo->data->running_threads);
-	//philo_desync(philo);
+	philo_desync(philo);
 	while (!get_int(&philo->data->data_mutex, &philo->data->end))
 	{
 		if (philo->full)
@@ -44,6 +44,8 @@ void	*start_feeding(void *temp)
 		spaghetti(philo);
 		my_write(SLEEPING, philo);
 		my_usleep(philo->data->psleep, philo->data);
+		if (philo->full)
+			break ;
 		thinking(philo);
 	}
 	return (NULL);
@@ -68,9 +70,7 @@ void	*one_philo(void *temp)
 void	feed_the_beasts(t_data *data)
 {
 	data->i = -1;
-	if (data->plimit == 0)
-		return ;
-	else if (1 == data->pnum)
+	if (1 == data->pnum)
 	{
 		my_thread(&data->arrphilo[0].pid, one_philo,
 			&data->arrphilo[0], CREATE);
@@ -90,27 +90,9 @@ void	feed_the_beasts(t_data *data)
 		while (++data->i < data->pnum)
 			my_thread(&data->arrphilo[data->i].pid, NULL,
 				NULL, JOIN);
-		my_thread(&data->monitor, NULL, NULL, DETACH);
+		set_int(&data->data_mutex, &data->end, 1);
+		my_thread(&data->monitor, NULL, NULL, JOIN);
 	}
-}
-
-void destroy_mutexes(t_data *data)
-{
-    int i;
-
-    // Destroy all fork mutexes
-	printf("forks\n");
-    for (i = 0; i < data->pnum; i++)
-        	my_mutex(&data->arrfork[i].fork_mutex, DESTROY);
-    // Destroy philosopher mutexes (if applicable)
-	printf("philos\n");
-    for (i = 0; i < data->pnum; i++)
-        my_mutex(&data->arrphilo[i].philo_mutex, DESTROY);
-	
-	printf("rest\n");
-    // Destroy other mutexes
-    my_mutex(&data->data_mutex, DESTROY);
-    my_mutex(&data->write_mutex, DESTROY);
 }
 
 int	main(int ac, char *av[])
@@ -125,9 +107,9 @@ int	main(int ac, char *av[])
 	set_data(&data);
 	freeing(data.avstr, data.avsplit, &data);
 	data_init(&data);
-	feed_the_beasts(&data);
-	//destroy_mutexes(&data);
+	if (data.plimit != 0)
+		feed_the_beasts(&data);
+	destroy_mutexes(&data);
 	free_data(&data);
-	printf("here\n");
 	return (0);
 }

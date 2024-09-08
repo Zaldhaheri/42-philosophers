@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo_init.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: zaldhahe <zaldhahe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/08/27 15:26:24 by zaldhahe          #+#    #+#             */
-/*   Updated: 2024/09/03 19:46:04 by marvin           ###   ########.fr       */
+/*   Created: 2024/09/08 17:20:55 by zaldhahe          #+#    #+#             */
+/*   Updated: 2024/09/08 17:20:55 by zaldhahe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,8 +89,8 @@ void	data_init(t_data *data)
 
 void	free_data(t_data *data)
 {
-    if (data->arrphilo)
-        free(data->arrphilo);
-    if (data->arrfork)
-        free(data->arrfork);
+	if (data->arrphilo)
+		free(data->arrphilo);
+	if (data->arrfork)
+		free(data->arrfork);
 }
