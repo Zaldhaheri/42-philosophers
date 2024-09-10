@@ -95,9 +95,6 @@ void	set_forks(t_data *data);
 void	set_philo(t_data *data);
 
 //parsing
-void	freeing(char *str, char **string, t_data *data);
-void	freexit(char *str, char **string, t_data *data);
-void	freerror(char *str, char **string, t_data *data, char *msg);
 int		is_valid(char *av[], t_data *data);
 int		checker(char *av[], t_data *data);
 
@@ -120,6 +117,12 @@ void	thread_error_handler(int status, int op);
 void	my_usleep(long usec, t_data *data);
 int		my_write(char *status, t_philo *philo);
 int		my_wait(struct timeval start, int et);
+
+//free
+void	freeing(char *str, char **string, t_data *data);
+void	freexit(char *str, char **string, t_data *data);
+void	freerror(char *str, char **string, t_data *data, char *msg);
+void	free_data(t_data *data);
 
 //utils
 size_t	ft_strlen(const char *str);

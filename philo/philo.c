@@ -132,4 +132,5 @@ int	main(int ac, char **av)
 	data.avstr = join_strings(av);
 	data.avsplit = ft_split(data.avstr, ' ', &data);
 	set_data(&data);
+	free_data(&data);
 }

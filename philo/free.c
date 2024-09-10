@@ -26,3 +26,17 @@ void	freeing(char *str, char **string, t_data *data)
 		free(string);
 	}
 }
+
+void	free_data(t_data *data)
+{
+	int	i;
+
+	i = 0;
+	my_mutex(&data->write_mutex, DESTROY);
+	while (i < data->pnum)
+		my_mutex(&data->arrfork[i++].fork_mutex, DESTROY);
+	if (data->arrfork)
+		free(data->arrfork);
+	if (data->arrphilo)
+		free(data->arrphilo);
+}
