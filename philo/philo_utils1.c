@@ -74,18 +74,3 @@ void	my_thread(pthread_t *thread, void *(*func)(void *), void *data, int op)
 	else
 		freerror(NULL, NULL, NULL, "wrong op for my_thread\n");
 }
-
-void	destroy_mutexes(t_data *data)
-{
-	int	i;
-
-	i = 0;
-	while (i < data->pnum)
-	{
-		my_mutex(&data->arrfork[i].fork_mutex, DESTROY);
-		my_mutex(&data->arrphilo[i].philo_mutex, DESTROY);
-		i++;
-	}
-	my_mutex(&data->data_mutex, DESTROY);
-	my_mutex(&data->write_mutex, DESTROY);
-}

@@ -38,12 +38,12 @@
 # define CREATE 4
 # define JOIN 5
 # define DETACH 6
-# define EATING 7
-# define SLEEPING 8
-# define THINKING 9
-# define FIRST_FORK 10
-# define SECOND_FORK 11
-# define DIED 12
+
+# define EATING BLUE"%d"RESET" "GREEN "%d is eating\n" RESET
+# define SLEEPING BLUE"%d"RESET" "CYAN"%d is sleeping\n" RESET
+# define THINKING BLUE"%d"RESET" "YELLOW"%d is thinking\n"RESET
+# define FORK BLUE"%ld"RESET" "WHITE"%d has taken a fork\n" RESET
+# define DIED BLUE"%d"RESET" "RED "%d died\n" RESET
 
 typedef struct s_data	t_data;
 typedef struct s_philo	t_philo;
@@ -63,27 +63,25 @@ struct s_data
 	long			psleep; //time to sleep
 	long			plimit; //limit of eats until stop
 	int				pready;	//for synchronization
-	long			start;
-	int				end;
-	long			running_threads;
-	pthread_t		monitor;
-	pthread_mutex_t	data_mutex;
-	pthread_mutex_t	write_mutex;
+    int             end; //death?
+    struct timeval  start_time;
+    long            start;
+    pthread_mutex_t write_mutex;
 	t_fork			*arrfork; //arr struct of forks
 	t_philo			*arrphilo; //arr struct of philos
 };
 
 struct s_philo
 {
-	pthread_t		pid; //process id
+	pthread_t		thread; //thread id
 	int				id; //location on table
-	int				full; //flag
-	long			meals; //amount ate
-	long			meal_time; //time eating
+    int             meal_count;
+    long            death;
+    struct timeval  last_eat;
+    struct timeval  curr_time;
+    t_data          *data;
 	t_fork			*fork_1; //first choice fork
 	t_fork			*fork_2; //second choice fork
-	pthread_mutex_t	philo_mutex;
-	t_data			*data; //access to main data
 };
 
 struct s_fork
@@ -109,9 +107,9 @@ int		is_valid(char *av[], t_data *data);
 int		checker(char *av[], t_data *data);
 
 //philo sim
-void	*one_philo(void *temp);
+void	one_philo(t_philo *philo);
 void	feed_the_beasts(t_data *data);
-void	*start_feeding(void *temp);
+void	start_feeding(void *temp);
 void	spaghetti(t_philo *philo);
 void	thinking(t_philo *philo);
 int		dead(t_philo *philo);
@@ -129,7 +127,7 @@ void	mutex_error_handler(int status, int op);
 void	my_thread(pthread_t *thread, void *(*func)(void *), void *data, int op);
 void	thread_error_handler(int status, int op);
 void	my_usleep(long usec, t_data *data);
-void	my_write(int status, t_philo *philo);
+int		my_write(char *status, t_philo *philo);
 
 //setters getters
 long	get_time(int i);
@@ -147,5 +145,8 @@ char	*ft_strjoin(char const *s1, char const *s2);
 char	*join_strings(char *av[]);
 char	**ft_split(char const *s, char c, t_data *data);
 void	*ft_calloc(size_t count, size_t size);
+
+int my_wait(struct timeval start, int et);
+int	is_dead(t_philo *philo);
 
 #endif

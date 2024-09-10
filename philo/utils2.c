@@ -12,21 +12,6 @@
 
 #include "philo.h"
 
-void	freeing(char *str, char **string, t_data *data)
-{
-	int	i;
-
-	i = -1;
-	if (str)
-		free(str);
-	if (string)
-	{
-		while (++i <= data->count - 1)
-			free(string[i]);
-		free(string);
-	}
-}
-
 int	count_word(char const *s, char c, t_data *data)
 {
 	int	d;
