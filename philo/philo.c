@@ -98,6 +98,8 @@ void	start_feeding(void *temp)
 	t_philo	*philo;
 
 	philo = (t_philo *)temp;
+	if (philo->data->plimit == 0)
+		return ;
 	if (philo->data->pnum == 1)
 	{
 		one_philo(philo);
@@ -106,8 +108,6 @@ void	start_feeding(void *temp)
 	gettimeofday(&philo->last_eat, NULL);
 	while (1)
 	{
-		if (philo->data->plimit == 0)
-			return ;
 		if (my_write(THINKING, philo))
 			return ;
 		if (philo->id % 2)
