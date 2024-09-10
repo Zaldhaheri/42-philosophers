@@ -6,7 +6,7 @@
 /*   By: zaldhahe <zaldhahe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 20:15:23 by zaldhahe          #+#    #+#             */
-/*   Updated: 2024/09/10 20:16:21 by zaldhahe         ###   ########.fr       */
+/*   Updated: 2024/09/10 20:20:48 by zaldhahe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,9 @@ int	my_write(char *status, t_philo *philo)
 {
 	long	time;
 
+	my_mutex(&philo->data->write_mutex, LOCK);
 	gettimeofday(&philo->curr_time, NULL);
 	time = philo->curr_time.tv_sec * 1e3 + philo->curr_time.tv_usec / 1e3;
-	my_mutex(&philo->data->write_mutex, LOCK);
 	if (!philo->data->end)
 	{
 		printf(status, time - philo->data->start, philo->id);
